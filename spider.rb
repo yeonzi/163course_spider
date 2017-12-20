@@ -10,8 +10,8 @@ browser0 = Selenium::WebDriver.for :phantomjs
 browser1 = Selenium::WebDriver.for :phantomjs
 browser2 = Selenium::WebDriver.for :phantomjs
 
-STDERR.puts '序号,开课单位,课程名称,课程时长,课程负载,内容类型,课程分类,课程链接'
-STDOUT.puts '序号,开课单位,课程名称,课程时长,课程负载,内容类型,课程分类,课程链接'
+STDERR.puts '序号,开课单位,课程名称,课程时长,课程负载,内容类型,课程分类,参加人数,课程链接'
+STDOUT.puts '序号,开课单位,课程名称,课程时长,课程负载,内容类型,课程分类,参加人数,课程链接'
 
 browser0.get(url)
 sleep 1
@@ -40,6 +40,12 @@ university.each do |i|
 
             # 课程信息
             course_text = browser2.find_elements(:class=>'block')
+            begin
+                person_num = browser2.find_element(:class=>'m-termInfo').find_element(:class=>'j-num').text
+                person_num.gsub!(/[^0-9]/i, '')
+            rescue
+                person_num = ''
+            end
             cnt +=1
             attribute = Hash.new
             begin
@@ -50,8 +56,8 @@ university.each do |i|
             rescue
                 
             end
-            STDERR.puts cnt.to_s + ',' + university_name + ',' + course_name + ',' + attribute['课程时长'].to_s + ',' + attribute['课程负载'].to_s + ',' + attribute['内容类型'].to_s + ',' + attribute['课程分类'].to_s + ',' + course_url
-            STDOUT.puts cnt.to_s + ',' + university_name + ',' + course_name + ',' + attribute['课程时长'].to_s + ',' + attribute['课程负载'].to_s + ',' + attribute['内容类型'].to_s + ',' + attribute['课程分类'].to_s + ',' + course_url
+            STDERR.puts cnt.to_s + ',' + university_name + ',' + course_name + ',' + attribute['课程时长'].to_s + ',' + attribute['课程负载'].to_s + ',' + attribute['内容类型'].to_s + ',' + attribute['课程分类'].to_s + ',' + person_num + ',' + course_url
+            STDOUT.puts cnt.to_s + ',' + university_name + ',' + course_name + ',' + attribute['课程时长'].to_s + ',' + attribute['课程负载'].to_s + ',' + attribute['内容类型'].to_s + ',' + attribute['课程分类'].to_s + ',' + person_num + ',' + course_url
         end
 
         begin
